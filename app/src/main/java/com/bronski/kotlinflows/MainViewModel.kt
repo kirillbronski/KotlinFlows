@@ -20,8 +20,15 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
     init {
         collectFlow6()
+    }
+
+    fun incrementCounter() {
+        _stateFlow.value += 1
     }
 
     private fun collectFlow() {
@@ -50,7 +57,7 @@ class MainViewModel : ViewModel() {
 
     private fun collectFlow3() {
         viewModelScope.launch(Dispatchers.IO) {
-           val count = countDownFlow
+            val count = countDownFlow
                 .filter {
                     it % 2 == 0
                 }
@@ -92,7 +99,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun collectFlow6() {
-        val flow1 = flow{
+        val flow1 = flow {
             emit(1)
             delay(500)
             emit(2)
@@ -104,7 +111,7 @@ class MainViewModel : ViewModel() {
                     delay(500)
                     emit(it + 2)
                 }
-            }.collect{
+            }.collect {
                 println("The value is $it")
             }
         }
