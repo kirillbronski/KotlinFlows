@@ -23,12 +23,33 @@ class MainViewModel : ViewModel() {
     private val _stateFlow = MutableStateFlow(0)
     val stateFlow = _stateFlow.asStateFlow()
 
+    private val _sharedFlow = MutableSharedFlow<Int>()
+    val sharedFlow = _sharedFlow.asSharedFlow()
+
     init {
-        collectFlow6()
+        viewModelScope.launch {
+            sharedFlow.collect {
+                delay(2000)
+                println("FIRST FLOW received number is $it")
+            }
+        }
+        viewModelScope.launch {
+            sharedFlow.collect {
+                delay(3000)
+                println("SECOND FLOW received number is $it")
+            }
+        }
+        squareNumber(7)
     }
 
     fun incrementCounter() {
         _stateFlow.value += 1
+    }
+
+    fun squareNumber(number: Int) {
+        viewModelScope.launch {
+            _sharedFlow.emit(number * number)
+        }
     }
 
     private fun collectFlow() {

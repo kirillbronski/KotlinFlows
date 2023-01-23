@@ -44,3 +44,11 @@ fun <T> ComponentActivity.collectLatestLifeCycleFlow(flow: Flow<T>, collect: sus
             }
         }
 }
+
+fun <T> ComponentActivity.collectLifeCycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit){
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            flow.collect(collect)
+        }
+    }
+}
